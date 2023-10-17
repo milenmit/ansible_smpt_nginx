@@ -1,0 +1,6 @@
+---
+# defaults file for /etc/ansible/roles/nginx
+- hosts: all
+  become: true
+  roles:
+    - nginx

@@ -1,0 +1,78 @@
+#Base configuration
+virtual_transport = transport:
+virtual_mailbox_domains = {{domain}}
+virtual_mailbox_maps = hash:/etc/postfix/virtual
+#transport_maps = hash:/etc/postfix/transport
+default_privs = ec2-user
+#virtual_alias_domains = smtp.freeunibg.org
+#virtual_alias_maps = hash:/etc/postfix/virtual
+
+smtpd_discard_ehlo_keywords = silent-discard, dsn
+myhostname = {{domain}}
+myorigin = localhost
+mydomain = {{domain}}
+inet_interfaces = all
+inet_protocols = ipv4
+mydestination = localhost
+mynetworks = 0.0.0.0/0  
+smtpd_banner = $myhostname ESMTP
+home_mailbox = Maildir/
+relay_domains = 
+relayhost =
+smtp_fallback_relay =
+#local_recipient_maps = hash:/etc/postfix/local_map
+local_recipient_maps =
+anvil_rate_time_unit=1s
+disable_dns_lookups = yes
+lmtp_host_lookup = native
+smtp_host_lookup = native
+
+smtpd_client_connection_count_limit=10
+#smtpd_client_recipient_rate_limit = 10
+#smtpd_client_connection_rate_limit = 10
+#smtpd_client_message_rate_limit = 10
+
+
+#SMTP Authentication
+#smtpd_sasl_type = dovecot
+#smtpd_sasl_path = private/auth
+#smtpd_sasl_auth_enable = yes
+#smtpd_sasl_security_options = noanonymous
+#smtpd_sasl_local_domain = $myhostname
+#smtpd_recipient_restrictions = permit_mynetworks, permit_auth_destination, permit_sasl_authenticated, reject,
+
+#smtpd_timeout = 1s
+
+#Restrictions
+#smtpd_recipient_restrictions =   check_recipient_access hash:/etc/postfix/recipient_access
+#                                 permit_mynetworks,
+#                                 permit_auth_destination,
+#                                 permit_sasl_authenticated,
+#                                 reject
+smtpd_recipient_restrictions = permit_mynetworks, reject
+
+#smtpd_sender_restrictions =    check_sender_access hash:/etc/postfix/restricted_senders,
+#                                reject
+
+#transport_maps            = hash:/etc/postfix/recipient_access
+
+# Additional STARTTLS configuration settings
+tls_random_source=dev:/dev/urandom
+
+# SMTPD TLS configuration for incoming connections
+#smtpd_use_tls = yes
+#smtp_tls_mandatory_protocols = !SSLv2, !SSLv3
+#smtpd_tls_mandatory_protocols = !SSLv2, !SSLv3
+#smtpd_tls_cert_file = /etc/pki/tls/certs/server233.crt
+#smtpd_tls_key_file = /etc/pki/tls/certs/server233.key
+#smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+#smtpd_tls_security_level = may
+#smtpd_tls_auth_only = yes
+
+# SMTP TLS configuration for outgoing connections
+#smtp_use_tls = yes
+#smtpd_tls_cert_file = /etc/ssl/umsbgqa-smtp.crt
+#smtpd_tls_key_file = /etc/ssl/umsbgqa-smtp.key
+#smtpd_tls_CAfile = /etc/ssl/server_rootCA.pem
+#smtp_tls_security_level = may
+compatibility_level = 3.6

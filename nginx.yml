@@ -1,0 +1,94 @@
+---
+- name: Install and configure nginx for static website hosting
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Add epel-release repo
+      yum:
+       name: epel-release
+       state: present
+
+    - name: Install nginx
+      yum:
+        name: nginx
+        state: present
+
+    - name: Add user to group root
+      user:
+        name: "{{ user }}"
+        groups: root
+        state: present
+
+    - name: Remove default nginx configuration
+      file:
+        path: /etc/nginx/nginx.conf
+        state: absent
+
+    - name: Set a hostname
+      hostname:
+        name: sofia.freeunibg.org
+
+    - name: Install cerbot
+      yum:
+       name: python3-certbot-nginx
+       state: latest
+    
+    - name: Check if certificate already exists using stat module
+      stat:
+        path: /etc/letsencrypt/live/{{domain}}
+      register: result
+
+    - name: Create letsencrypt/cerbot certificate if not exists
+      shell: 
+       cmd: sudo certbot certonly --standalone --noninteractive --preferred-challenges  http -m email@email.com  -d {{domain}}
+      when: not result.stat.exists
+    
+    - name: Add nginx configuration
+      template:
+        src: static-site-config.j2
+        dest: /etc/nginx/nginx.conf
+
+           
+    - name: Ensure nginx is running
+      systemd:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Create a directory in var/www if it does not exist
+      file:
+       path: /var/www/new
+       state: directory
+       mode: '0755'
+
+    - name: Change file ownership, group and permissions
+      file:
+       path: /var/www/new/
+       group: nginx
+       owner: root
+       mode: '0755'
+
+    - name: Create a directory if it does not exist
+      file:
+       path: /usr/share/nginx/html/new
+       state: directory
+       mode: '0755'
+
+    - name: Change file ownership, group and permissions
+      file:
+       path: /usr/share/nginx/html/new
+       group: nginx
+       owner: nginx
+       mode: '0755'
+
+    - name: Create symbolic link 
+      file:
+       src: "/var/www/new"
+       dest: "/usr/share/nginx/html/new"
+       state: link
+       force: true
+
+
+  vars:
+    user: "milencho"

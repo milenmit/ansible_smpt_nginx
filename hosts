@@ -1,0 +1,6 @@
+[servers]
+server1 ansible_host=192.168.0.200
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3
+domain=sofia.freeunibg.org

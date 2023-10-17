@@ -1,0 +1,18 @@
+---
+- name: Install and configure postfix 
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Add epel-release repo
+      yum:
+       name: epel-release
+       state: present
+
+    - name: Install  postfix
+      yum:
+        name: postfix
+        state: present
+
+    - name: Configure postfix main.cf file.
+      
