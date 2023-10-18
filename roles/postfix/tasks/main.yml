@@ -10,31 +10,23 @@
     name: postfix
     state: present
 
-- name: Ensure postfix is running
-  systemd:
-    name: postfix
-    state: started
-    enabled: yes
-
-- name: Add configuration main.cf and master.cf
+- name: Add configuration main.cf and master.cf , transport and virtual
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
+    group: postfix
+    owner: postfix
   loop:
     - { src: '../templates/main.cf.j2', dest: '/etc/postfix/main.cf' }
     - { src: '../templates/master.cf.j2', dest: '/etc/postfix/master.cf' } 
-    - { src: '../templates/transport.j2', dest: '/etc/postfix/transport'}   
+    - { src: '../templates/transport.j2', dest: '/etc/postfix/transport'}  
+    - { src: '../templates/virtual.j2', dest: '/etc/postfix/virtual'} 
 
-# - name: Copy python script with owner and permissions
-#   copy:
-#     src: '{{item}}'
-#     dest: '/etc/postfix'
-#     owner: postfix
-#     group: postfix
-#     mode: 0644
-#   loop:
-#     - transport
-#     - transport.db
+- name: run postmap for transport and virtual.
+  command: echo "this task will create transport and virtual db"
+  notify: 
+    - 'run postmap transport'
+    - 'run postmap virtual'
 
 -  name: Copy python script with owner and permissions
    copy:
@@ -44,4 +36,9 @@
      group: nginx
      mode: 0644
 
+- name: Ensure postfix is running
+  systemd:
+    name: postfix
+    state: started
+    enabled: yes
 

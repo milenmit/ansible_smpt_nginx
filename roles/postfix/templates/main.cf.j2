@@ -3,7 +3,7 @@ virtual_transport = transport:
 virtual_mailbox_domains = {{domain}}
 virtual_mailbox_maps = hash:/etc/postfix/virtual
 #transport_maps = hash:/etc/postfix/transport
-default_privs = ec2-user
+#default_privs = ec2-user
 #virtual_alias_domains = smtp.freeunibg.org
 #virtual_alias_maps = hash:/etc/postfix/virtual
 
@@ -75,4 +75,4 @@ tls_random_source=dev:/dev/urandom
 #smtpd_tls_key_file = /etc/ssl/umsbgqa-smtp.key
 #smtpd_tls_CAfile = /etc/ssl/server_rootCA.pem
 #smtp_tls_security_level = may
-compatibility_level = 3.6
+#compatibility_level = 3.6

@@ -1,2 +1,11 @@
 ---
-# handlers file for /etc/ansible/roles/postfix
+# handlers file for webserver
+- name: run postmap transport
+  shell:
+    cmd: postmap /etc/postfix/transport
+  become: true
+    
+- name: run postmap virtual
+  shell:
+    cmd: postmap /etc/postfix/virtual
+  become: true
