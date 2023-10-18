@@ -1,0 +1,29 @@
+---
+
+- name: Add epel-release repo
+  yum:
+    name: epel-release
+    state: present
+
+- name: Install postfix
+  yum:
+    name: postfix
+    state: present
+
+- name: Ensure nginx is running
+  systemd:
+    name: postfix
+    state: started
+    enabled: yes
+
+- name: Add configuration main.cf and master.cf
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop:
+    - { src: '../templates/main.cf.j2', dest: '/etc/postfix/main.cf' }
+    - { src: '../templates/master.cf.j2', dest: '/etc/postfix/master.cf' }   
+
+
+
+

@@ -39,6 +39,11 @@
   template:
     src: nginx_config.j2
     dest: /etc/nginx/nginx.conf
+    owner: nginx
+    group: nginx
+    mode: '0644'
+  notify: 
+    - 'Restart the Nginx service'
            
 - name: Ensure nginx is running
   systemd:
@@ -78,4 +83,5 @@
     dest: "/usr/share/nginx/html/new"
     state: link
     force: true
+  
 
