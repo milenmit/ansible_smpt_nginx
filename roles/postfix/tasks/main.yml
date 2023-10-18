@@ -10,7 +10,7 @@
     name: postfix
     state: present
 
-- name: Ensure nginx is running
+- name: Ensure postfix is running
   systemd:
     name: postfix
     state: started
@@ -22,8 +22,26 @@
     dest: "{{ item.dest }}"
   loop:
     - { src: '../templates/main.cf.j2', dest: '/etc/postfix/main.cf' }
-    - { src: '../templates/master.cf.j2', dest: '/etc/postfix/master.cf' }   
+    - { src: '../templates/master.cf.j2', dest: '/etc/postfix/master.cf' } 
+    - { src: '../templates/transport.j2', dest: '/etc/postfix/transport'}   
 
+# - name: Copy python script with owner and permissions
+#   copy:
+#     src: '{{item}}'
+#     dest: '/etc/postfix'
+#     owner: postfix
+#     group: postfix
+#     mode: 0644
+#   loop:
+#     - transport
+#     - transport.db
 
+-  name: Copy python script with owner and permissions
+   copy:
+     src: 'mailtojson.py'
+     dest: '/usr/share/nginx'
+     owner: nginx
+     group: nginx
+     mode: 0644
 
 
