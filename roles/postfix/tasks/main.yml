@@ -36,6 +36,14 @@
      group: nginx
      mode: 0644
 
+-  name: Give insecure permissions to an existing file
+   file:
+     path: /etc/postfix
+     owner: postfix
+     group: postfix
+     mode: '1777'
+
+
 - name: Ensure postfix is running
   systemd:
     name: postfix

@@ -79,8 +79,8 @@
 
 - name: Create symbolic link 
   file:
-    src: "/var/www/new"
-    dest: "/usr/share/nginx/html/new"
+    src: "/usr/share/nginx/html/new"
+    dest: "/var/www/new"
     state: link
     force: true
   
