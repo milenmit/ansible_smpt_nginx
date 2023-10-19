@@ -32,7 +32,7 @@
 
 - name: Create letsencrypt/cerbot certificate if not exists
   shell: 
-    cmd: sudo certbot certonly --standalone --noninteractive --preferred-challenges  http -m email@email.com  -d {{domain}}
+    cmd: sudo certbot certonly --standalone --noninteractive --agree-tos --preferred-challenges  http -m email@email.com  -d {{domain}}
   when: not cert_exists.stat.exists
     
 - name: Add nginx configuration

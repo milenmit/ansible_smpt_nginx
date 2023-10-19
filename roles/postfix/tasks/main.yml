@@ -54,17 +54,17 @@
   ansible.posix.selinux:
     state: disabled
 
-- name: find
-  lineinfile: 
-    dest: /etc/selinux/config
-    line: "disabled"
-  check_mode: yes
-  register: presence.exists
-  failed_when: presence.change
+#- name: find
+#  lineinfile: 
+#    dest: /etc/selinux/config
+#    line: "disabled"
+#  check_mode: yes
+#  register: presence.exists
+#  failed_when: presence.change
 
 - name: Unconditionally reboot the machine with all defaults
   reboot:
-  when: presence.exists.stat
+#  when: presence.exists.stat
 
 - name: Wait 300 seconds for port 22 to become open and contain "OpenSSH"
   ansible.builtin.wait_for:
@@ -78,6 +78,6 @@
 - mail:
     host: localhost
     port: 25
-    to: '{{user}}' <john.smith@{{domain}}>
+    to:  <john.smith@{{domain}}>
     subject: Ansible-report
     body: 'System {{ ansible_hostname }} has been successfully provisioned.'
