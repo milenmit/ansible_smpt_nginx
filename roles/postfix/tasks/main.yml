@@ -50,3 +50,34 @@
     state: started
     enabled: yes
 
+- name: Disable SELinux
+  ansible.posix.selinux:
+    state: disabled
+
+- name: find
+  lineinfile: 
+    dest: /etc/selinux/config
+    line: "disabled"
+  check_mode: yes
+  register: presence.exists
+  failed_when: presence.change
+
+- name: Unconditionally reboot the machine with all defaults
+  reboot:
+  when: presence.exists.stat
+
+- name: Wait 300 seconds for port 22 to become open and contain "OpenSSH"
+  ansible.builtin.wait_for:
+    port: 22
+    host: '{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}'
+    search_regex: OpenSSH
+    delay: 10
+  vars:
+    ansible_connection: local
+
+- mail:
+    host: localhost
+    port: 25
+    to: '{{user}}' <john.smith@{{domain}}>
+    subject: Ansible-report
+    body: 'System {{ ansible_hostname }} has been successfully provisioned.'

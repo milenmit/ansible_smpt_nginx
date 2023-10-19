@@ -181,9 +181,9 @@ class MailJson:
             content_charset = 'utf-8'
 
         headers = self._get_part_headers(self.msg)
-        print("headers: ", headers)
+        #print("headers: ", headers)
         self.data["headers"] = headers
-        print("printing data headers",self.data["headers"])
+        #print("printing data headers",self.data["headers"])
         self.data["datetime"] = self._parse_date(headers.get("date", None)).strftime("%Y-%m-%d %H:%M:%S")
         self.data["subject"] = self._fixEncodedSubject(headers.get("subject", None))
         self.data["to"] = self._parse_recipients(headers.get("to", None))

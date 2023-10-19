@@ -64,23 +64,10 @@
     owner: nginx
     mode: '0755'
 
-- name: Create a directory if it does not exist
+- name: Create symbolic link
   file:
-    path: /usr/share/nginx/html/new
-    state: directory
-    mode: '0755'
-
-- name: Change file ownership, group and permissions
-  file:
-    path: /usr/share/nginx/html/new
-    group: nginx
-    owner: nginx
-    mode: '0755'
-
-- name: Create symbolic link 
-  file:
-    src: "/usr/share/nginx/html/new"
-    dest: "/var/www/new"
+    src: "/var/www/new"
+    dest: "/usr/share/nginx/html/new"
     state: link
     force: true
   
