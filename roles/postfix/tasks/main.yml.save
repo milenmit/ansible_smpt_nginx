@@ -22,18 +22,11 @@
     - { src: '../templates/transport.j2', dest: '/etc/postfix/transport'}  
     - { src: '../templates/virtual.j2', dest: '/etc/postfix/virtual'} 
 
-
--  name: Give insecure permissions to an existing file
-   file:
-     path: /etc/postfix
-     owner: postfix
-     group: postfix
-     mode: '1777'
-
 - name: run postmap for transport and virtual.
-  shell:
-    cmd: postmap /etc/postfix/virtual && postmap /etc/postfix/transport
-  become: true
+  command: echo "this task will create transport and virtual db"
+  notify: 
+    - 'run postmap transport'
+    - 'run postmap virtual'
 
 -  name: Copy python script with owner and permissions
    copy:
@@ -43,31 +36,48 @@
      group: nginx
      mode: 0644
 
+-  name: Give insecure permissions to an existing file
+   file:
+     path: /etc/postfix
+     owner: postfix
+     group: postfix
+     mode: '1777'
 
--  name: Ensure postfix is running
-   systemd:
-     name: postfix
-     state: started
-     enabled: yes
 
-- name: Disabling SELinux
-  selinux:
+- name: Ensure postfix is running
+  systemd:
+    name: postfix
+    state: started
+    enabled: yes
+
+- name: Disable SELinux
+  ansible.posix.selinux:
     state: disabled
-  register: selinuxdisabled
+
+- name: find
+  lineinfile: 
+    dest: /etc/selinux/config
+    line: "disabled"
+  check_mode: yes
+  register: presence.exists
+  failed_when: presence.change
 
 - name: Unconditionally reboot the machine with all defaults
-  ansible.builtin.reboot:
-  when: selinuxdisabled is changed
+  reboot:
+  when: presence.exists.stat
 
-- name: Wait for port 22 to become open on the host, don't start checking for 30 seconds
-  wait_for:
+- name: Wait 300 seconds for port 22 to become open and contain "OpenSSH"
+  ansible.builtin.wait_for:
     port: 22
-    delay: 30
-
+    host: '{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}'
+    search_regex: OpenSSH
+    delay: 10
+  vars:
+    ansible_connection: local
 
 - mail:
     host: localhost
     port: 25
-    to:  <john.smith@{{domain}}>
+    to: user<john.smith@{{domain}}>
     subject: Ansible-report
     body: 'System {{ ansible_hostname }} has been successfully provisioned.'
