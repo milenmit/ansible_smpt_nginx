@@ -50,21 +50,6 @@
      state: started
      enabled: yes
 
-- name: Disabling SELinux
-  selinux:
-    state: disabled
-  register: selinuxdisabled
-
-- name: Unconditionally reboot the machine with all defaults
-  ansible.builtin.reboot:
-  when: selinuxdisabled is changed
-
-- name: Wait for port 22 to become open on the host, don't start checking for 30 seconds
-  wait_for:
-    port: 22
-    delay: 30
-
-
 - mail:
     host: localhost
     port: 25

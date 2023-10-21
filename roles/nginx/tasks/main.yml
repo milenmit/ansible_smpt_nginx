@@ -44,6 +44,7 @@
     mode: '0644'
   notify: 
     - 'Restart the Nginx service'
+ 
            
 - name: Ensure nginx is running
   systemd:
