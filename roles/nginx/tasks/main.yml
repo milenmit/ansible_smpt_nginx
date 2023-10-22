@@ -44,6 +44,7 @@
     mode: '0644'
   notify: 
     - 'Restart the Nginx service'
+    - 'do not permit traffic in default zone on port 80/tcp'
  
            
 - name: Ensure nginx is running

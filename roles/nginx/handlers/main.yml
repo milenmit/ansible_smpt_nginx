@@ -5,3 +5,9 @@
     name: nginx
     state: restarted
 
+# disable http port 80 after certbot installation - only httpS/443 will remain open
+- name: do not permit traffic in default zone on port 80/tcp
+  ansible.posix.firewalld:
+    port: 80/tcp
+    permanent: true
+    state: disabled

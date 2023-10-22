@@ -23,10 +23,6 @@
     state: disabled
   register: selinuxdisabled
 
-# - name: Unconditionally reboot the machine with all defaults
-#   ansible.builtin.reboot:
-#   when: selinuxdisabled is changed
-
 - name: launch the reboot
   reboot: 
     msg: "Reboot with ansible..."
@@ -35,6 +31,7 @@
     pre_reboot_delay: 0
     post_reboot_delay: 30
     test_command: uptime
-  when: selinuxdisabled
+  when: selinuxdisabled.changed
+
 
  
